@@ -1,24 +1,25 @@
-apiVersion: skaffold/v1beta2
+apiVersion: skaffold/v1alpha2
 kind: Config
 build:
-  artifacts:
-  - image: changeme
-    context: .
-    docker: {}
   tagPolicy:
     envTemplate:
-      template: '{{.DOCKER_REGISTRY}}/dragoonsbets/drg-ms-bet:{{.VERSION}}'
+      template: "{{.DOCKER_REGISTRY}}/dragoonsbets/drg-ms-bet:{{.VERSION}}"
+  artifacts:
+  - imageName: drg-ms-bet
+    workspace: .
+    docker: {}
   local: {}
 deploy:
-  kubectl: {}
+  kubectl:
+    manifests:
 profiles:
 - name: dev
   build:
-    artifacts:
-    - docker: {}
     tagPolicy:
       envTemplate:
-        template: '{{.DOCKER_REGISTRY}}/dragoonsbets/drg-ms-bet:{{.DIGEST_HEX}}'
+        template: "{{.DOCKER_REGISTRY}}/dragoonsbets/drg-ms-bet:{{.DIGEST_HEX}}"
+    artifacts:
+    - docker: {}
     local: {}
   deploy:
     helm:
@@ -26,5 +27,5 @@ profiles:
       - name: drg-ms-bet
         chartPath: charts/drg-ms-bet
         setValueTemplates:
-          image.repository: '{{.DOCKER_REGISTRY}}/dragoonsbets/drg-ms-bet'
-          image.tag: '{{.DIGEST_HEX}}'
+          image.repository: "{{.DOCKER_REGISTRY}}/dragoonsbets/drg-ms-bet"
+          image.tag: "{{.DIGEST_HEX}}"
